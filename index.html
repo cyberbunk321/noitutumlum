@@ -13,10 +13,55 @@
     li { padding: 4px; cursor: pointer; }
     li:hover { background: #f0f0f0; }
     .loading { color: #888; }
+
+    /* Nút Donate */
+    .donate-btn {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+    .donate-btn:hover {
+        background-color: #218838;
+    }
+
+    /* Popup QR */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        margin: 10% auto;
+        text-align: center;
+    }
+    .close-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 </style>
 </head>
 <body>
 <h1>Tool Nối Từ</h1>
+
+<!-- Nút Donate -->
+<button class="donate-btn" onclick="openDonate()">💚 Donate</button>
+
 <input type="text" id="inputWord" placeholder="Nhập từ... (Enter để tìm)">
 <div class="container">
     <div class="list-container">
@@ -26,6 +71,16 @@
     <div class="list-container">
         <h3>Không nối tiếp được</h3>
         <ul id="deadends"></ul>
+    </div>
+</div>
+
+<!-- Popup QR -->
+<div id="donateModal" class="modal">
+    <div class="modal-content">
+        <h3>Ủng hộ qua MB Bank</h3>
+        <img src="https://img.vietqr.io/image/MB-0706866835-print.png?accountName=Ung%20Ho%20Tool%20Noi%20Tu" alt="QR MB Bank">
+        <br><br>
+        <button class="close-btn" onclick="closeDonate()">Đóng</button>
     </div>
 </div>
 
@@ -94,6 +149,14 @@ function searchWord() {
 document.getElementById("inputWord").addEventListener("keydown", e => {
     if (e.key === "Enter") searchWord();
 });
+
+function openDonate() {
+    document.getElementById("donateModal").style.display = "block";
+}
+
+function closeDonate() {
+    document.getElementById("donateModal").style.display = "none";
+}
 
 loadDictionary();
 </script>
