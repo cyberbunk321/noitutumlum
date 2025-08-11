@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tool Nối Từ</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #2c3e50; }
+    input { width: 100%; padding: 8px; margin-bottom: 10px; }
+    .container { display: flex; gap: 20px; }
+    .list-container { flex: 1; }
+    ul { border: 1px solid #ccc; padding: 5px; list-style: none; height: 400px; overflow-y: scroll; }
+    li { padding: 4px; cursor: pointer; }
+    li:hover { background: #f0f0f0; }
+    .loading { color: #888; }
+</style>
+</head>
+<body>
+<h1>Tool Nối Từ</h1>
+<input type="text" id="inputWord" placeholder="Nhập từ... (Enter để tìm)">
+<div class="container">
+    <div class="list-container">
+        <h3>Từ nối được</h3>
+        <ul id="results"></ul>
+    </div>
+    <div class="list-container">
+        <h3>Không nối tiếp được</h3>
+        <ul id="deadends"></ul>
+    </div>
+</div>
+
+<script>
+const URL = "https://raw.githubusercontent.com/undertheseanlp/dictionary/refs/heads/master/dictionary/words.txt";
+let dictionary = [];
+
+function getLastWord(text) {
+    let parts = text.trim().split(/\s+/);
+    return parts[parts.length - 1] || "";
+}
+
+async function loadDictionary() {
+    document.getElementById("results").innerHTML = "<li class='loading'>Đang tải dữ liệu...</li>";
+    try {
+        let res = await fetch(URL);
+        let text = await res.text();
+        dictionary = [];
+        text.split("\n").forEach(line => {
+            try {
+                let obj = JSON.parse(line);
+                if (obj.text) dictionary.push(obj.text);
+            } catch(e) {}
+        });
+        console.log(`Đã tải ${dictionary.length} từ`);
+        document.getElementById("results").innerHTML = "";
+    } catch (e) {
+        alert("Lỗi tải dữ liệu: " + e);
+    }
+}
+
+function searchWord() {
+    let query = document.getElementById("inputWord").value.trim();
+    let resultsEl = document.getElementById("results");
+    let deadendsEl = document.getElementById("deadends");
+    resultsEl.innerHTML = "";
+    deadendsEl.innerHTML = "";
+
+    if (!query) return;
+
+    let lastWord = getLastWord(query).toLowerCase();
+    let matches = dictionary.filter(w => w.toLowerCase().startsWith(lastWord));
+
+    matches.forEach(w => {
+        let li = document.createElement("li");
+        li.textContent = w;
+        li.onclick = () => {
+            document.getElementById("inputWord").value = w;
+            searchWord();
+        };
+        resultsEl.appendChild(li);
+
+        let lw = getLastWord(w).toLowerCase();
+        if (!dictionary.some(x => x.toLowerCase().startsWith(lw) && x !== w)) {
+            let li2 = document.createElement("li");
+            li2.textContent = w;
+            deadendsEl.appendChild(li2);
+        }
+    });
+
+    if (matches.length === 0) {
+        resultsEl.innerHTML = "<li>Không tìm thấy kết quả</li>";
+    }
+}
+
+document.getElementById("inputWord").addEventListener("keydown", e => {
+    if (e.key === "Enter") searchWord();
+});
+
+loadDictionary();
+</script>
+</body>
+</html>
