@@ -37,14 +37,23 @@
         left: 0; top: 0;
         width: 100%; height: 100%;
         background: rgba(0,0,0,0.5);
+        display: flex;               /* Thêm */
+        justify-content: center;     /* Thêm */
+        align-items: center;         /* Thêm */
     }
     .modal-content {
         background: white;
         padding: 20px;
         border-radius: 10px;
         width: 300px;
-        margin: 10% auto;
+        max-width: 90%;              /* Thêm */
         text-align: center;
+    }
+    .modal-content img {
+        max-width: 100%;             /* Thêm */
+        height: auto;                /* Thêm */
+        display: block;
+        margin: 0 auto 15px auto;
     }
     .close-btn {
         background: #dc3545;
@@ -83,7 +92,6 @@
         <button class="close-btn" onclick="closeDonate()">Đóng</button>
     </div>
 </div>
-
 <script>
 const URL = "https://raw.githubusercontent.com/undertheseanlp/dictionary/refs/heads/master/dictionary/words.txt";
 let dictionary = [];
